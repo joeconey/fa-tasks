@@ -1,0 +1,56 @@
+<p><span class="signatures"></span> people have signed the petition</p>
+
+<script>
+
+var totalPetitionSignatures = 0;
+var petitionSignaturesFrom34 = 0;
+var petitionSignaturesFrom48 = 0;
+
+
+function numberFormat(nStr, prefix) {
+    var prefix = prefix || '';
+    nStr += '';
+    x = nStr.split('.');
+    x1 = x[0];
+    x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1))
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    return prefix + x1 + x2;
+}
+
+
+$.ajax({
+  method: "POST",
+  url: "getPetitionCount.php",
+  data: { petitionId: 34 }
+})
+  .done(function( response ) {
+    petitionSignaturesFrom34 = response;
+  });
+
+$.ajax({
+  method: "POST",
+  url: "getPetitionCount.php",
+  data: { petitionId: 48 }
+})
+  .done(function( response ) {
+    petitionSignaturesFrom48 = response;
+  });
+
+var checkServerResponse = setInterval(serverTimer, 100);
+
+function serverTimer() {
+	if(petitionSignaturesFrom34 !== 0 && petitionSignaturesFrom48 !== 0){
+		window.clearInterval(checkServerResponse);
+		totalPetitionSignatures = petitionSignaturesFrom34 + petitionSignaturesFrom48;
+		formatAndOutputSigs(totalPetitionSignatures);
+	}
+}
+
+function formatAndOutputSigs(signatures){
+	var output = numberFormat(signatures);
+	$('.signatures').html(output);
+}
+
+</script>
